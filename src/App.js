@@ -6,6 +6,8 @@ import {
     Button,
     Label,
     Form,
+    Dimmer,
+    Loader
   } from "semantic-ui-react";
   import DatetimePicker from 'react-semantic-datetime';
   import moment from 'moment';
@@ -45,8 +47,8 @@ export default class App extends Component {
             },
             options: {
                 zoom: 8,
-                type: 'distance',
-                range: 10000,
+                type: 'time',
+                range: 3600,
                 mode: 'truck',
                 traffic: 'enabled',
                 style: 'reduced.day',
@@ -55,7 +57,8 @@ export default class App extends Component {
             clientsCoords : [],
             selectedAdressIndex : 0,
             displayCalendar:false,
-            isolineInfos:[]
+            isolineInfos:[],
+            loading: false,
         }
 
         this.mapBlock = React.createRef()
@@ -77,9 +80,9 @@ export default class App extends Component {
         
         this.setState({
            options: copy
-        }, () => {
+        }/*, () => {
            this.updateIsolines();
-        });
+        }*/);
      
      }
 
@@ -92,7 +95,7 @@ export default class App extends Component {
         Promise.resolve(promise).then(res => {
            isolines = res.response.isoline[0].component[0].shape;
            isolines = isolines.map(x => [x.split(',')[0], x.split(',')[1]])
-           this.setState({ isolineInfos : isolines})
+           this.setState({ isolineInfos : isolines, loading : false})
         });
 
      }
@@ -140,34 +143,35 @@ export default class App extends Component {
 
                     <div className="controls">
 
-                    <div>
+                    {/*<div>
                     <label htmlFor="type">Distance / Durée</label>
                     <select
                        id="type"
                        value={this.state.options.type}
                        onChange={this.handleFormChange}
                     >
-                       <option value="time">Secondes</option>
-                       <option value="distance">Mètres</option>
+                       <option value="time">Heures</option>
+                       <option value="distance">Kilomètres</option>
                     </select>
      
-                    </div>
+                    </div>*/}
                     <div>
                         <label htmlFor="range">
-                        Valeur ({parseInt(this.state.options.range).toLocaleString()}) 
-                            {
+                        Valeur ({this.convertSecToHours(this.state.options.range)}) 
+                            {/*
                                 this.state.options.type === 'distance'
                                 ?
                                 <p>{Math.round(this.state.options.range / 1000)} km</p>
                                 :
                                 <p>{ this.convertSecToHours(this.state.options.range) }</p>
-                            }
+                            */}
                         </label>
                         <input
                         id="range"
                         onChange={this.handleFormChange}
-                        type="range"
-                        min="1"
+                        type="number"
+                        step="1800"
+                        min="0"
                         max={max}
                         value={sliderVal}
                         />
@@ -228,11 +232,25 @@ export default class App extends Component {
                     </div>}
 
                         <div >
-
+                            <Button color='linkedin'
+                                    onClick={()=> {
+                                                    this.setState({loading : true})
+                                                    this.updateIsolines()
+                                                }
+                                            }>Envoyer ces valeurs</Button>
                         </div>
                         
                     </div>
         
+                    {
+                        this.state.loading 
+                        ?
+
+                        <Dimmer active inverted>
+                            <Loader >Chargement des données</Loader>
+                        </Dimmer>
+
+                        :
                     <div                         
                     ref={this.mapBlock}>
 
@@ -246,6 +264,7 @@ export default class App extends Component {
                         />
                     
                     </div>
+                    }
                    
                     
                 

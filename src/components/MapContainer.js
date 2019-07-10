@@ -62,7 +62,7 @@ export default class MapContainer extends React.Component {
 
 
 
-                  <MarkerClusterGroup onClick={()=>console.log('okok')} onMouseOver={()=>console.log('nn')}>
+                  <MarkerClusterGroup onClick={()=>{}} onMouseOver={()=>{}}>
                   {
                      this.state.clients.map((client, idx) => {
 
