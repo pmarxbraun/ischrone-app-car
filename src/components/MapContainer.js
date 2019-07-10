@@ -5,6 +5,7 @@ import L from 'leaflet'
 import {   Button   } from "semantic-ui-react";
 import PrintControlDefault from 'react-leaflet-easyprint';
 import CustomMarker from './CustomMarker'
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 import clientsData from '../modules/data'
 
@@ -52,11 +53,16 @@ export default class MapContainer extends React.Component {
                   zoom={parseInt(this.props.options.zoom)}
                   zoomControl={false}
                   attributionControl={this.props.index === 8}
+                  preferCanvas={true}
+                  maxZoom={24}
                >
                   <TileLayer
                      url={hereTileUrl(this.props.style)}
                   />
 
+
+
+                  <MarkerClusterGroup onClick={()=>console.log('okok')} onMouseOver={()=>console.log('nn')}>
                   {
                      this.state.clients.map((client, idx) => {
 
@@ -69,6 +75,7 @@ export default class MapContainer extends React.Component {
 
                      })
                   }
+                  </MarkerClusterGroup>
 
 
                   {
