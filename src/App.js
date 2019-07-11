@@ -27,28 +27,32 @@ export default class App extends Component {
                     coords : [48.975307, 1.752872],
                     name : 'VEOLIA',
                     polygon: [],
+                    color : 'blue'
                     },
                     {
                     coords : [48.384035, 2.963927],
                     name : 'SMAB',
                     polygon: [],
+                    color : 'orange'
                     },
                     {
                     coords : [49.311205, 1.014449],
                     name : 'Sonolub',
                     polygon: [],
+                    color : 'violet'
                     },
                     {
                     coords : [48.948978, 2.299089],
                     name : 'Sevia',
                     polygon: [],
+                    color : 'green'
                     }
                 ],
             },
             options: {
-                zoom: 8,
+                zoom: 7,
                 type: 'time',
-                range: 3600,
+                range: 14400,
                 mode: 'truck',
                 traffic: 'enabled',
                 style: 'reduced.day',
@@ -58,7 +62,10 @@ export default class App extends Component {
             selectedAdressIndex : 0,
             displayCalendar:false,
             isolineInfos:[],
-            loading: false,
+            isoFirstReduce:[],
+            isoSecReduce:[],
+            isoThirdReduce:[],
+            loading: true,
         }
 
         this.mapBlock = React.createRef()
@@ -87,16 +94,81 @@ export default class App extends Component {
      }
 
     updateIsolines = () => {
-        let isolines = []
+
+        this.setState({loading : true })
+
+        let isolines = [];
+        let isoFirst = [];
+        let isoSec = [];
+        let isoThird = [];
+
+        let isoReduceFirstOpt = {
+                                    zoom: this.state.options.zoom,
+                                    type: 'time',
+                                    range: 10800,
+                                    mode: 'truck',
+                                    traffic: 'enabled',
+                                    style: this.state.options.style,
+                                    time: this.state.options.time
+                                }
+        let isoSecOpt =     {
+                                zoom: this.state.options.zoom,
+                                type: 'time',
+                                range: 7200,
+                                mode: 'truck',
+                                traffic: 'enabled',
+                                style: this.state.options.style,
+                                time: this.state.options.time
+                            }
+        let isoThirdOpt =     {
+                                zoom: this.state.options.zoom,
+                                type: 'time',
+                                range: 3600,
+                                mode: 'truck',
+                                traffic: 'enabled',
+                                style: this.state.options.style,
+                                time: this.state.options.time
+                            }
+
         const promise =  fetch(hereIsolineUrl(this.state.wastePoints.infos[this.state.selectedAdressIndex].coords,
                                               this.state.options))
                             .then(x => x.json());
+        
+        const isoReduceOne =  fetch(hereIsolineUrl(this.state.wastePoints.infos[this.state.selectedAdressIndex].coords,
+                                              isoReduceFirstOpt))
+                            .then(x => x.json());
+
+        const isoReduceSec =  fetch(hereIsolineUrl(this.state.wastePoints.infos[this.state.selectedAdressIndex].coords,
+            isoSecOpt))
+              .then(x => x.json());
+
+        const isoReduceThird =  fetch(hereIsolineUrl(this.state.wastePoints.infos[this.state.selectedAdressIndex].coords,
+            isoThirdOpt))
+                .then(x => x.json());
                             
         Promise.resolve(promise).then(res => {
            isolines = res.response.isoline[0].component[0].shape;
            isolines = isolines.map(x => [x.split(',')[0], x.split(',')[1]])
-           this.setState({ isolineInfos : isolines, loading : false})
+           this.setState({ isolineInfos : isolines})
         });
+
+        Promise.resolve(isoReduceOne).then(res => {
+            isoFirst = res.response.isoline[0].component[0].shape;
+            isoFirst = isoFirst.map(x => [x.split(',')[0], x.split(',')[1]])
+            this.setState({ isoFirstReduce : isoFirst})
+         });
+
+         Promise.resolve(isoReduceSec).then(res => {
+            isoSec = res.response.isoline[0].component[0].shape;
+            isoSec = isoSec.map(x => [x.split(',')[0], x.split(',')[1]])
+            this.setState({ isoSecReduce : isoSec})
+         });
+
+         Promise.resolve(isoReduceThird).then(res => {
+            isoThird = res.response.isoline[0].component[0].shape;
+            isoThird = isoThird.map(x => [x.split(',')[0], x.split(',')[1]])
+            this.setState({ isoThirdReduce : isoThird, loading : false})
+         });
 
      }
 
@@ -125,12 +197,15 @@ export default class App extends Component {
 
         return (
                 <div>
+                    <h2>Carte isochrone camions</h2>
+
+
                     <div className="selectAdress">
                         <Label size='large' color='teal'>Choix du site</Label>
                             {
                                 this.state.wastePoints.infos.map((value, index) => {
                                     return <Button
-                                                color={ this.state.selectedAdressIndex === index && 'violet'}
+                                                color={ this.state.selectedAdressIndex === index && this.state.wastePoints.infos[index].color}
                                                 key={index}
                                                 onClick={() => this.handleSelectAdress(index)}
                                             >
@@ -154,7 +229,7 @@ export default class App extends Component {
                        <option value="distance">Kilomètres</option>
                     </select>
      
-                    </div>*/}
+                    </div>
                     <div>
                         <label htmlFor="range">
                         Valeur ({this.convertSecToHours(this.state.options.range)}) 
@@ -164,7 +239,7 @@ export default class App extends Component {
                                 <p>{Math.round(this.state.options.range / 1000)} km</p>
                                 :
                                 <p>{ this.convertSecToHours(this.state.options.range) }</p>
-                            */}
+                            }
                         </label>
                         <input
                         id="range"
@@ -187,6 +262,12 @@ export default class App extends Component {
                         max="16"
                         value={this.state.options.zoom}
                         />
+                    </div>*/}
+                    <div >
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#cf0808', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>0 à 1 heure</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#e89923', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>1 à 2 heures</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#d3d938', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>2 à 3 heures</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#31a833', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>3 à 4 heures</p></div>
                     </div>
                     <div>
                         <label htmlFor="style">Map Style</label>
@@ -258,6 +339,9 @@ export default class App extends Component {
                             center={this.state.wastePoints.infos[this.state.selectedAdressIndex].coords}
                             options={this.state.options}
                             polygon={this.state.isolineInfos}
+                            isoFirstReduce={this.state.isoFirstReduce}
+                            isoSecReduce = {this.state.isoSecReduce}
+                            isoThirdReduce = {this.state.isoThirdReduce}
                             style={this.state.options.style}
                             markers={this.state.wastePoints.infos}
                             indexSelected={this.state.selectedAdressIndex}
