@@ -52,7 +52,7 @@ export default class App extends Component {
             options: {
                 zoom: 7,
                 type: 'time',
-                range: 14400,
+                range: 7200,
                 mode: 'truck',
                 traffic: 'enabled',
                 style: 'reduced.day',
@@ -105,7 +105,7 @@ export default class App extends Component {
         let isoReduceFirstOpt = {
                                     zoom: this.state.options.zoom,
                                     type: 'time',
-                                    range: 10800,
+                                    range: 5400,
                                     mode: 'truck',
                                     traffic: 'enabled',
                                     style: this.state.options.style,
@@ -114,7 +114,7 @@ export default class App extends Component {
         let isoSecOpt =     {
                                 zoom: this.state.options.zoom,
                                 type: 'time',
-                                range: 7200,
+                                range: 3600,
                                 mode: 'truck',
                                 traffic: 'enabled',
                                 style: this.state.options.style,
@@ -123,7 +123,7 @@ export default class App extends Component {
         let isoThirdOpt =     {
                                 zoom: this.state.options.zoom,
                                 type: 'time',
-                                range: 3600,
+                                range: 1800,
                                 mode: 'truck',
                                 traffic: 'enabled',
                                 style: this.state.options.style,
@@ -264,10 +264,10 @@ export default class App extends Component {
                         />
                     </div>*/}
                     <div >
-                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#cf0808', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>0 à 1 heure</p></div>
-                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#e89923', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>1 à 2 heures</p></div>
-                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#d3d938', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>2 à 3 heures</p></div>
-                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#31a833', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>3 à 4 heures</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#cf0808', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>0 à 30 mn</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#e89923', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>30 mn à 1 h</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#d3d938', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>1 h à 1 h 30</p></div>
+                        <div style={{display:'flex'}}><div style={{width:'8px', height:'8px', backgroundColor:'#31a833', marginRight:'3px', marginTop:'3px'}}></div><p style={{fontSize:'10px'}}>1 h 30 à 2 h</p></div>
                     </div>
                     <div>
                         <label htmlFor="style">Map Style</label>
