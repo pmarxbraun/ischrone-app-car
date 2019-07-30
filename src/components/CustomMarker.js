@@ -45,8 +45,10 @@ class CustomMarker extends React.Component {
 
     Promise.resolve(promise).then(res => {infos = {
       time : res.response.route[0].summary.trafficTime,
-      dist : res.response.route[0].summary.distance
+      dist : res.response.route[0].summary.distance,
       }
+
+      console.log(res)
 
       this.setState({infos : infos})
     })
@@ -68,6 +70,7 @@ class CustomMarker extends React.Component {
             <div>
               <p>Distance : {this.state.infos.dist / 1000} km</p>
               <p>Temps : {this.convertSecToHours(this.state.infos.time)}</p>
+              <p>Emission CO2 : {+((this.state.infos.dist / 1000)*1.09).toFixed(2)} KG</p>
             </div>
           }
           </Popup>
