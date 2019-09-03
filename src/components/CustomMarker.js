@@ -62,6 +62,7 @@ class CustomMarker extends React.Component {
               icon={greenIcon}
         >
           <Popup>
+          <p>{this.props.client}</p>
           <p>{this.props.adress}</p>
           <button
           onClick={()=> this.routing() }>Calcul</button>

@@ -100,6 +100,7 @@ export default class MapContainer extends React.Component {
                            return <CustomMarker key={idx} 
                                                 position={[client.latitude,client.longitude]} 
                                                 adress = {client.adress}
+                                                client = {client.client}
                                                 wastePoint={this.props.center}
                                        />
 
