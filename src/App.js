@@ -197,7 +197,7 @@ export default class App extends Component {
 
         return (
             <div>
-                <h2>Carte isochrone camions</h2>
+                <h2>Carte isochrone voiture</h2>
 
 
                 <div className="selectAdress">
